@@ -1,42 +1,37 @@
-import { FaThumbtack, FaTrash, FaEdit, FaUndo, FaTimes } from 'react-icons/fa';
+import React from 'react';
 
-const NoteCard = ({ note, onPin, onEdit, onDelete, onRestore, onHardDelete, isTrash = false }) => {
+export default function NoteCard({ note, onEdit, onDelete, onPin, onRestore, onHardDelete }) {
     return (
-        <div className={`bg-white p-4 rounded shadow-md relative group hover:shadow-lg transition ${note.isPinned ? 'border-2 border-yellow-400' : ''}`}>
-            <div className="flex justify-between items-start mb-2">
-                <h3 className="font-bold text-lg">{note.title}</h3>
-                {!isTrash && (
-                    <button onClick={() => onPin(note)} className={`text-gray-400 hover:text-yellow-500 ${note.isPinned ? 'text-yellow-500' : ''}`}>
-                        <FaThumbtack />
-                    </button>
-                )}
+        <div className="bg-white rounded-lg p-4 shadow-sm border">
+            <div className="flex justify-between items-start">
+                <div>
+                    <h4 className="font-semibold text-slate-800">{note.title || 'Untitled'}</h4>
+                    <p className="text-sm text-slate-600 mt-1">{note.category || 'General'}</p>
+                </div>
+                <div className="flex gap-2">
+                    <button onClick={() => onPin && onPin(note)} className="text-xs px-2 py-1 rounded bg-yellow-50 border"> {note.isPinned ? 'Unpin' : 'Pin'} </button>
+                    {note.isTrashed ? (
+                        <>
+                            <button onClick={() => onRestore && onRestore(note)} className="text-xs px-2 py-1 rounded bg-green-50 border">Restore</button>
+                            <button onClick={() => onHardDelete && onHardDelete(note)} className="text-xs px-2 py-1 rounded bg-red-50 border text-red-600">Delete</button>
+                        </>
+                    ) : (
+                        <>
+                            <button onClick={() => onEdit && onEdit(note)} className="text-xs px-2 py-1 rounded bg-sky-50 border">Edit</button>
+                            <button onClick={() => onDelete && onDelete(note)} className="text-xs px-2 py-1 rounded bg-red-50 border text-red-600">Trash</button>
+                        </>
+                    )}
+                </div>
             </div>
-            <p className="text-gray-600 whitespace-pre-wrap mb-4">{note.content}</p>
-            <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">{note.category}</span>
 
-            <div className="absolute bottom-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition">
-                {isTrash ? (
-                    <>
-                        <button onClick={() => onRestore(note)} className="text-green-500 hover:text-green-600" title="Restore">
-                            <FaUndo />
-                        </button>
-                        <button onClick={() => onHardDelete(note)} className="text-red-500 hover:text-red-600" title="Permanent Delete">
-                            <FaTimes />
-                        </button>
-                    </>
-                ) : (
-                    <>
-                        <button onClick={() => onEdit(note)} className="text-blue-500 hover:text-blue-600" title="Edit">
-                            <FaEdit />
-                        </button>
-                        <button onClick={() => onDelete(note)} className="text-red-500 hover:text-red-600" title="Move to Trash">
-                            <FaTrash />
-                        </button>
-                    </>
-                )}
+            <div className="mt-3 text-sm text-slate-700">
+                {note.content ? note.content.slice(0, 200) : <em className="text-slate-400">No content</em>}
+            </div>
+
+            <div className="mt-3 text-xs text-slate-500 flex justify-between">
+                <div>{new Date(note.createdAt || Date.now()).toLocaleString()}</div>
+                <div>{note.isPinned ? '📌 Pinned' : ''}</div>
             </div>
         </div>
     );
-};
-
-export default NoteCard;
+}

@@ -1,60 +1,55 @@
-import { useState, useEffect } from 'react';
-import axiosInstance from '../utils/axiosInstance';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
+import api from '../utils/api';
 import NoteCard from '../components/NoteCard';
 
-const Trash = () => {
-    const [notes, setNotes] = useState([]);
+export default function Trash() {
+    const [trashed, setTrashed] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    const fetchTrash = async () => {
+        setLoading(true);
+        try {
+            const res = await api.get('/notes/trash');
+            setTrashed(res.data || []);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        fetchTrashedNotes();
+        fetchTrash();
     }, []);
 
-    const fetchTrashedNotes = async () => {
-        try {
-            const res = await axiosInstance.get('/notes/trash');
-            setNotes(res.data);
-        } catch (error) {
-            console.error(error);
-        }
+    const handleRestore = async (note) => {
+        await api.put(`/notes/restore/${note._id}`);
+        fetchTrash();
     };
 
-    const restoreNote = async (note) => {
-        try {
-            await axiosInstance.put(`/notes/restore/${note._id}`);
-            fetchTrashedNotes();
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    const hardDeleteNote = async (note) => {
-        if (!window.confirm("Are you sure you want to permanently delete this note?")) return;
-        try {
-            await axiosInstance.delete(`/notes/hard-delete/${note._id}`);
-            fetchTrashedNotes();
-        } catch (error) {
-            console.error(error);
-        }
+    const handleHardDelete = async (note) => {
+        if (!confirm('Permanently delete this note?')) return;
+        await api.delete(`/notes/hard-delete/${note._id}`);
+        fetchTrash();
     };
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div>
             <Navbar />
-            <div className="container mx-auto mt-8 px-4">
-                <h1 className="text-2xl font-bold mb-6 text-gray-700">Trash</h1>
+            <div className="container mx-auto px-4 py-6">
+                <h1 className="text-xl font-semibold mb-4">Trash</h1>
 
-                {notes.length === 0 ? (
-                    <p className="text-center text-gray-500">Trash is empty.</p>
+                {loading ? (
+                    <div>Loading...</div>
+                ) : trashed.length === 0 ? (
+                    <div className="bg-white p-6 rounded border">Trash is empty.</div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {notes.map(note => (
-                            <NoteCard
-                                key={note._id}
-                                note={note}
-                                isTrash={true}
-                                onRestore={restoreNote}
-                                onHardDelete={hardDeleteNote}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {trashed.map(n => (
+                            <NoteCard key={n._id} note={n}
+                                onRestore={handleRestore}
+                                onHardDelete={handleHardDelete}
                             />
                         ))}
                     </div>
@@ -62,6 +57,4 @@ const Trash = () => {
             </div>
         </div>
     );
-};
-
-export default Trash;
+}

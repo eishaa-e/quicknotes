@@ -1,44 +1,25 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import CreateEditNote from './pages/CreateEditNote';
 import Trash from './pages/Trash';
-import useAuth from './hooks/useAuth';
+import PrivateRoute from './utils/PrivateRoute';
 
-const ProtectedRoute = ({ children }) => {
-    const { user, loading } = useAuth();
-    if (loading) return <div>Loading...</div>;
-    return user ? children : <Navigate to="/login" />;
-};
-
-function App() {
+export default function App() {
     return (
-        <AuthProvider>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route
-                        path="/"
-                        element={
-                            <ProtectedRoute>
-                                <Dashboard />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/trash"
-                        element={
-                            <ProtectedRoute>
-                                <Trash />
-                            </ProtectedRoute>
-                        }
-                    />
-                </Routes>
-            </BrowserRouter>
-        </AuthProvider>
+        <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+
+            <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+            <Route path="/create" element={<PrivateRoute><CreateEditNote /></PrivateRoute>} />
+            <Route path="/edit/:id" element={<PrivateRoute><CreateEditNote /></PrivateRoute>} />
+            <Route path="/trash" element={<PrivateRoute><Trash /></PrivateRoute>} />
+
+            {/* fallback */}
+            <Route path="*" element={<div className="min-h-screen flex items-center justify-center">Page not found</div>} />
+        </Routes>
     );
 }
-
-export default App;

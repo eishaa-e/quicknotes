@@ -14,9 +14,9 @@ const noteSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    category: {
-        type: String,
-        default: 'General'
+    tags: {
+        type: [String],
+        default: []
     },
     isPinned: {
         type: Boolean,

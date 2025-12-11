@@ -44,6 +44,18 @@ const hardDeleteNote = async (id, userId) => {
     return note;
 };
 
+const searchNotes = async (userId, query) => {
+    return await Note.find({
+        userId,
+        isTrashed: false,
+        $or: [
+            { title: { $regex: new RegExp(query, 'i') } },
+            { content: { $regex: new RegExp(query, 'i') } },
+            { tags: { $regex: new RegExp(query, 'i') } } // search in tags too
+        ]
+    }).sort({ isPinned: -1, updatedAt: -1 });
+};
+
 module.exports = {
     createNote,
     getNotes,
@@ -52,4 +64,5 @@ module.exports = {
     getTrashedNotes,
     restoreFromTrash,
     hardDeleteNote,
+    searchNotes,
 };

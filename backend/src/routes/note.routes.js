@@ -5,6 +5,7 @@ const { protect } = require('../middleware/auth.middleware');
 
 router.use(protect); // All note routes are protected
 
+router.get('/search-notes', noteController.searchNotes);
 router.post('/', noteController.createNote);
 router.get('/', noteController.getNotes);
 router.put('/:noteId', noteController.updateNote);

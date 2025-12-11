@@ -66,6 +66,19 @@ const hardDelete = async (req, res) => {
     }
 };
 
+const searchNotes = async (req, res) => {
+    try {
+        const { query } = req.query;
+        if (!query) {
+            return res.status(400).json({ message: "Search query is required" });
+        }
+        const notes = await noteService.searchNotes(req.user._id, query);
+        res.json({ notes });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     createNote,
     getNotes,
@@ -74,4 +87,5 @@ module.exports = {
     getTrash,
     restoreNote,
     hardDelete,
+    searchNotes,
 };
