@@ -20,8 +20,9 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center">
-            <div className="w-full max-w-md bg-white rounded-lg p-6 shadow">
+        <div className="min-h-screen flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?q=80&w=2072&auto=format&fit=crop')" }}>
+            <div className="absolute inset-0 bg-black/40"></div>
+            <div className="relative w-full max-w-md bg-white/95 backdrop-blur-sm rounded-lg p-8 shadow-xl">
                 <h2 className="text-2xl font-semibold mb-2">Login to QuickNotes</h2>
                 <p className="text-sm text-slate-500 mb-4">Enter your account details</p>
 

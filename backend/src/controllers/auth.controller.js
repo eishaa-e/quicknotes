@@ -5,7 +5,12 @@ const register = async (req, res) => {
         const user = await authService.registerUser(req.body);
         res.status(201).json({
             message: 'User registered',
-            token: user.token
+            token: user.token,
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email
+            }
         });
     } catch (error) {
         res.status(400).json({ message: error.message });
@@ -17,7 +22,12 @@ const login = async (req, res) => {
         const user = await authService.loginUser(req.body.email, req.body.password);
         res.json({
             message: 'Login successful',
-            token: user.token
+            token: user.token,
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email
+            }
         });
     } catch (error) {
         res.status(401).json({ message: error.message });

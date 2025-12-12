@@ -25,6 +25,10 @@ const noteSchema = new mongoose.Schema({
     isTrashed: {
         type: Boolean,
         default: false
+    },
+    category: {
+        type: String,
+        default: 'General'
     }
 }, {
     timestamps: true

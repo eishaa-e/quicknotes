@@ -16,26 +16,12 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (token) {
-            // optionally validate token by fetching profile
-            setLoading(true);
-            api.get('/auth/me')
-                .then((res) => {
-                    if (res.data?.user) {
-                        setUser(res.data.user);
-                        localStorage.setItem('user', JSON.stringify(res.data.user));
-                    }
-                })
-                .catch(() => {
-                    // invalid token -> logout
-                    setUser(null);
-                    setToken(null);
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                })
-                .finally(() => setLoading(false));
+        if (token && user) {
+            // we trust stored user because backend gives only token
+            localStorage.setItem('user', JSON.stringify(user));
         }
-    }, [token]);
+    }, [token, user]);
+
 
     const login = async (email, password) => {
         setLoading(true);

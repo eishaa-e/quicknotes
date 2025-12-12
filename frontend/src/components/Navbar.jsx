@@ -46,7 +46,7 @@ export default function Navbar({ onSearch, onClear }) {
                 <div className="flex items-center gap-3">
                     {user ? (
                         <>
-                            <div className="text-sm text-slate-600">Hi, <span className="font-medium text-slate-800">{user.name || user.email}</span></div>
+                            <Link to="/profile" className="text-sm text-slate-600 hover:underline">Hi, <span className="font-medium text-slate-800">{user.name || user.email}</span></Link>
                             <button
                                 onClick={handleLogout}
                                 className="px-3 py-1 rounded-md bg-red-50 text-red-600 border border-red-100 text-sm"
